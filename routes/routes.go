@@ -8,11 +8,16 @@ import (
 func HandleRequests(h *handlers.AlunoHandler) {
 	r := gin.Default()
 	r.GET("/:nome", h.Welcome)
-	r.GET("/alunos", h.FindAll)
-	r.GET("/alunos/:id", h.FindById)
-	r.POST("/alunos", h.Create)
-	r.DELETE("/alunos/:id", h.Delete)
-	r.PATCH("/alunos/:id", h.Update)
-	r.GET("/alunos/cpf/:cpf", h.FindByCpf)
+	alunos := r.Group("/alunos")
+	{
+		alunos.GET("", h.FindAll)
+		alunos.GET("/:id", h.FindById)
+		alunos.POST("", h.Create)
+		alunos.DELETE("/:id", h.Delete)
+		alunos.PUT("/:id", h.Update)
+		alunos.PATCH("/:id", h.Patch)
+		alunos.GET("/cpf/:cpf", h.FindByCpf)
+	}
+
 	r.Run()
 }

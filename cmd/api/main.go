@@ -1,6 +1,8 @@
 package main
 
 import (
+	"log"
+
 	"github.com/Seasky89/go-gin-rest-api/internal/database"
 	"github.com/Seasky89/go-gin-rest-api/internal/handlers"
 	"github.com/Seasky89/go-gin-rest-api/internal/repository"
@@ -9,7 +11,10 @@ import (
 )
 
 func main() {
-	db := database.ConnectDB()
+	db, err := database.ConnectDB()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	repo := repository.NewAlunoRepository(db)
 	service := services.NewAlunoService(repo)

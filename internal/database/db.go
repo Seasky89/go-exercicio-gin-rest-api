@@ -11,12 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-var (
-	DB  *gorm.DB
-	err error
-)
-
-func ConnectDB() *gorm.DB {
+func ConnectDB() (*gorm.DB, error) {
 	if err := godotenv.Load(); err != nil {
 		log.Println("Arquivo .env não encontrado")
 	}
@@ -30,10 +25,14 @@ func ConnectDB() *gorm.DB {
 		os.Getenv("DB_PORT"),
 	)
 
-	DB, err = gorm.Open(postgres.Open(dsn))
+	db, err := gorm.Open(postgres.Open(dsn))
 	if err != nil {
-		log.Panic("Erro ao conectar com o banco de dados")
+		return nil, err
 	}
-	DB.AutoMigrate(&models.Aluno{})
-	return DB
+
+	if err := db.AutoMigrate(&models.Aluno{}); err != nil {
+		return nil, err
+	}
+
+	return db, nil
 }
