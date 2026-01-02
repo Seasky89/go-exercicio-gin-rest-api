@@ -1,19 +1,22 @@
 # 📚 API de Alunos (Go)
 
-API REST desenvolvida em Go para gerenciamento de alunos, seguindo boas práticas de organização em camadas (Handler, Service, Repository, Domain e DTOs).
+Projeto desenvolvido como exercício prático para estudo de **Go (Golang)** utilizando o framework **Gin**, aplicando boas práticas de organização de código, separação de responsabilidades e testes.
 
-O projeto utiliza **Gin** para o servidor HTTP e **GORM** para persistência de dados.
+O projeto expõe uma API REST para gerenciamento de alunos e também possui rotas para páginas HTML (server-side rendering).
+
 
 ---
 
-## 🚀 Tecnologias utilizadas
+## 🛠️ Tecnologias utilizadas
 
-- Go
-- Gin
-- GORM
-- PostgreSQL
-- Docker / Docker Compose
-- Postman (para testes das requisições)
+- **Go**
+- **Gin Gonic**
+- **GORM**
+- **PostgreSQL**
+- **HTML Templates**
+- **Docker / Docker Compose**
+- **Testify** (testes)
+- **Postman** (para testes das requisições)
 
 ---
 
@@ -22,29 +25,37 @@ O projeto utiliza **Gin** para o servidor HTTP e **GORM** para persistência de 
 ```text
 go-exercicio-gin-rest-api
 ├── cmd/
-│ └── api/
-│ └── main.go
+│  └── api/
+│      └── main.go
 ├── internal/
-│ ├── handler/
-│ ├── service/
-│ ├── repository/
-│ ├── domain/
-│ ├── dto/
-│ └── models/
-├── migrations/
+│ ├── database/        # Conexão com o banco de dados
+│ ├── handler/         # Handlers HTTP (API e Pages)
+│ ├── service/         # Camada de serviços (casos de uso)
+│ ├── repository/      # Camada de persistência
+│ ├── domain/          # Regras de negócio e validações
+│ ├── dto/             # DTOs de entrada e saída da API
+│ └── models/          # Models utilizados pelo GORM
+├── routes/
+│ ├── api_routes.go    # Rotas da API
+│ ├── page_routes.go   # Rotas de páginas HTML
+│ └── router.go        # Setup do router Gin
+├── assets/            # Pasta com arquivos CSS
+├── templates/         # Pasta com arquivos das páginas HTML
 ├── docker-compose.yml
 ├── go.mod
 └── README.md
 ```
 
-### 📌 Camadas
+### 📌 Arquitetura
 
-- **handler**: camada HTTP (Gin). Responsável por receber requests e devolver responses.
-- **service**: regras de negócio.
-- **repository**: acesso ao banco de dados.
-- **domain**: validações e erros de domínio.
-- **models**: entidades persistidas no banco.
-- **dto**: objetos de entrada e saída da API.
+O projeto segue uma separação em camadas inspirada em Clean Architecture
+
+- **Handlers**: camada HTTP (Gin). Responsável por receber requests e devolver responses.
+- **Services**: regras de negócio.
+- **Repository**: acesso ao banco de dados.
+- **Domain**: validações e erros de domínio.
+- **Models**: entidades persistidas no banco.
+- **DTOs**: objetos de entrada e saída da API.
 
 ---
 
@@ -61,7 +72,7 @@ go-exercicio-gin-rest-api
 docker-compose up -d
 ```
 
-Executando a aplicação
+### Executando a aplicação
 
 ```bash
 go run cmd/api/main.go
@@ -75,20 +86,7 @@ http://localhost:8080
 
 ---
 
-## 📌 Endpoints disponíveis
-
-### 🔹 Criar aluno
-**POST** `/alunos`
-
-```json
-{
-  "nome": "João da Silva",
-  "cpf": "12345678901",
-  "rg": "1234567"
-}
-```
-
----
+## 🔌 Endpoints disponíveis (API)
 
 ### 🔹 Listar alunos
 
@@ -105,6 +103,20 @@ http://localhost:8080
 ### 🔹 Buscar aluno por CPF
 
 **GET** `/alunos/cpf/{cpf}`
+
+---
+
+### 🔹 Criar novo aluno
+
+**POST** `/alunos`
+
+```json
+{
+  "nome": "João da Silva",
+  "cpf": "12345678901",
+  "rg": "1234567"
+}
+```
 
 ---
 
@@ -125,6 +137,7 @@ Atualização completa do recurso.
 ---
 
 ### 🔹 Atualizar aluno parcialmente (PATCH)
+
 Atualização parcial do recurso. Apenas os campos enviados serão alterados.
 
 **PATCH** `/alunos/{id}`
@@ -143,6 +156,14 @@ Atualização parcial do recurso. Apenas os campos enviados serão alterados.
 
 ---
 
+## 📄 Rotas de páginas (HTML)
+
+| Método | Rota        | Descrição                    |
+|--------|-------------|------------------------------|
+| GET    | `/index`    | Página de listagem de alunos |
+
+---
+
 ## ✅ Validações
 
 - Nome obrigatório
@@ -152,7 +173,24 @@ Atualização parcial do recurso. Apenas os campos enviados serão alterados.
 
 ---
 
-## 🧪 Testes das requisições
+## 🧪 Testes
+
+O projeto possui testes automatizados para:
+- Services
+- Handlers
+- Rotas
+
+Para executar os testes:
+
+```bash
+go test ./...
+```
+
+Nos testes de rotas, são utilizados handlers fake, evitando dependências de banco de dados ou templates HTML.
+
+---
+
+## 🔍 Testes manuais
 
 As requisições da API foram testadas utilizando o **Postman**.
 
@@ -163,7 +201,7 @@ As requisições da API foram testadas utilizando o **Postman**.
 - O PUT substitui completamente o recurso.
 - O PATCH altera apenas os campos enviados.
 - DTOs são usados para separar o contrato da API das entidades do domínio.
-- O domínio não depende de framework HTTP.
+- O projeto tem fins educacionais, mas segue padrões próximos aos utilizados em projetos reais.
 
 ---
 
