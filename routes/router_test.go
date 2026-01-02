@@ -5,17 +5,30 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/Seasky89/go-gin-rest-api/internal/handlers"
 	"github.com/Seasky89/go-gin-rest-api/routes"
 	"github.com/gin-gonic/gin"
 	"github.com/stretchr/testify/assert"
 )
 
+type fakeAlunoHandler struct{}
+
+func (f *fakeAlunoHandler) Welcome(c *gin.Context)      { c.Status(200) }
+func (f *fakeAlunoHandler) FindAll(c *gin.Context)      { c.Status(200) }
+func (f *fakeAlunoHandler) FindById(c *gin.Context)     { c.Status(200) }
+func (f *fakeAlunoHandler) Create(c *gin.Context)       { c.Status(200) }
+func (f *fakeAlunoHandler) Delete(c *gin.Context)       { c.Status(200) }
+func (f *fakeAlunoHandler) Update(c *gin.Context)       { c.Status(200) }
+func (f *fakeAlunoHandler) Patch(c *gin.Context)        { c.Status(200) }
+func (f *fakeAlunoHandler) FindByCpf(c *gin.Context)    { c.Status(200) }
+func (f *fakeAlunoHandler) IndexPage(c *gin.Context)    { c.Status(200) }
+func (f *fakeAlunoHandler) NotFoundPage(c *gin.Context) { c.Status(200) }
+
 func TestAlunosRoutesExist(t *testing.T) {
 	gin.SetMode(gin.TestMode)
 
-	handler := &handlers.AlunoHandler{}
-	r := routes.SetupRouter(handler)
+	handler := &fakeAlunoHandler{}
+	r := routes.SetupRouter()
+	routes.RegisterAPIRoutes(r, handler)
 
 	tests := []struct {
 		name   string

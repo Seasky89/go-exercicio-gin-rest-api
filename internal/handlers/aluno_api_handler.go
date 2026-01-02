@@ -10,22 +10,33 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-type AlunoHandler struct {
+type AlunoAPIHandler interface {
+	Welcome(c *gin.Context)
+	FindAll(c *gin.Context)
+	FindById(c *gin.Context)
+	FindByCpf(c *gin.Context)
+	Create(c *gin.Context)
+	Delete(c *gin.Context)
+	Update(c *gin.Context)
+	Patch(c *gin.Context)
+}
+
+type alunoHandler struct {
 	service services.AlunoService
 }
 
-func NewAlunoHandler(service services.AlunoService) *AlunoHandler {
-	return &AlunoHandler{service: service}
+func NewAlunoHandler(service services.AlunoService) *alunoHandler {
+	return &alunoHandler{service: service}
 }
 
-func (h *AlunoHandler) Welcome(c *gin.Context) {
+func (h *alunoHandler) Welcome(c *gin.Context) {
 	nome := c.Params.ByName("nome")
 	c.JSON(http.StatusOK, gin.H{
 		"API diz:": "E ai " + nome + ", tudo beleza?",
 	})
 }
 
-func (h *AlunoHandler) FindAll(c *gin.Context) {
+func (h *alunoHandler) FindAll(c *gin.Context) {
 	a, err := h.service.FindAll()
 	if err != nil {
 		HandleHttpError(c, err)
@@ -34,7 +45,7 @@ func (h *AlunoHandler) FindAll(c *gin.Context) {
 	c.JSON(http.StatusOK, a)
 }
 
-func (h *AlunoHandler) FindById(c *gin.Context) {
+func (h *alunoHandler) FindById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Params.ByName("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -51,7 +62,7 @@ func (h *AlunoHandler) FindById(c *gin.Context) {
 	c.JSON(http.StatusOK, a)
 }
 
-func (h *AlunoHandler) FindByCpf(c *gin.Context) {
+func (h *alunoHandler) FindByCpf(c *gin.Context) {
 	cpf := c.Param("cpf")
 
 	a, err := h.service.FindByCpf(cpf)
@@ -63,7 +74,7 @@ func (h *AlunoHandler) FindByCpf(c *gin.Context) {
 
 }
 
-func (h *AlunoHandler) Create(c *gin.Context) {
+func (h *alunoHandler) Create(c *gin.Context) {
 	var req dto.CreateAlunoRequest
 	if err := c.ShouldBindJSON(&req); err != nil {
 		HandleHttpError(c, err)
@@ -92,7 +103,7 @@ func (h *AlunoHandler) Create(c *gin.Context) {
 	c.JSON(http.StatusCreated, resp)
 }
 
-func (h *AlunoHandler) Delete(c *gin.Context) {
+func (h *alunoHandler) Delete(c *gin.Context) {
 	id, err := strconv.Atoi(c.Params.ByName("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -108,7 +119,7 @@ func (h *AlunoHandler) Delete(c *gin.Context) {
 	c.JSON(http.StatusOK, a)
 }
 
-func (h *AlunoHandler) Update(c *gin.Context) {
+func (h *alunoHandler) Update(c *gin.Context) {
 	id, err := strconv.Atoi(c.Params.ByName("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{
@@ -139,7 +150,7 @@ func (h *AlunoHandler) Update(c *gin.Context) {
 	c.JSON(http.StatusOK, resp)
 }
 
-func (h *AlunoHandler) Patch(c *gin.Context) {
+func (h *alunoHandler) Patch(c *gin.Context) {
 	id, err := strconv.Atoi(c.Params.ByName("id"))
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{

@@ -20,5 +20,10 @@ func main() {
 	service := services.NewAlunoService(repo)
 	handler := handlers.NewAlunoHandler(service)
 
-	routes.HandleRequests(handler)
+	r := routes.SetupRouter()
+
+	routes.RegisterAPIRoutes(r, handler)
+	routes.RegisterPageRoutes(r, handler)
+
+	r.Run()
 }

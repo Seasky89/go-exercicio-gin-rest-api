@@ -5,9 +5,7 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func SetupRouter(h *handlers.AlunoHandler) *gin.Engine {
-	r := gin.Default()
-
+func RegisterAPIRoutes(r *gin.Engine, h handlers.AlunoAPIHandler) {
 	r.GET("/:nome", h.Welcome)
 	alunos := r.Group("/alunos")
 	{
@@ -19,11 +17,4 @@ func SetupRouter(h *handlers.AlunoHandler) *gin.Engine {
 		alunos.PATCH("/:id", h.Patch)
 		alunos.GET("/cpf/:cpf", h.FindByCpf)
 	}
-
-	return r
-}
-
-func HandleRequests(h *handlers.AlunoHandler) {
-	r := SetupRouter(h)
-	r.Run()
 }
