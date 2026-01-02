@@ -11,10 +11,10 @@ import (
 )
 
 type AlunoHandler struct {
-	service *services.AlunoService
+	service services.AlunoService
 }
 
-func NewAlunoHandler(service *services.AlunoService) *AlunoHandler {
+func NewAlunoHandler(service services.AlunoService) *AlunoHandler {
 	return &AlunoHandler{service: service}
 }
 
@@ -37,7 +37,9 @@ func (h *AlunoHandler) FindAll(c *gin.Context) {
 func (h *AlunoHandler) FindById(c *gin.Context) {
 	id, err := strconv.Atoi(c.Params.ByName("id"))
 	if err != nil {
-		HandleHttpError(c, err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "id inválido",
+		})
 		return
 	}
 
@@ -93,7 +95,9 @@ func (h *AlunoHandler) Create(c *gin.Context) {
 func (h *AlunoHandler) Delete(c *gin.Context) {
 	id, err := strconv.Atoi(c.Params.ByName("id"))
 	if err != nil {
-		HandleHttpError(c, err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "id inválido",
+		})
 		return
 	}
 	a, err := h.service.Delete(id)
@@ -107,7 +111,9 @@ func (h *AlunoHandler) Delete(c *gin.Context) {
 func (h *AlunoHandler) Update(c *gin.Context) {
 	id, err := strconv.Atoi(c.Params.ByName("id"))
 	if err != nil {
-		HandleHttpError(c, err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "id inválido",
+		})
 		return
 	}
 
@@ -136,7 +142,9 @@ func (h *AlunoHandler) Update(c *gin.Context) {
 func (h *AlunoHandler) Patch(c *gin.Context) {
 	id, err := strconv.Atoi(c.Params.ByName("id"))
 	if err != nil {
-		HandleHttpError(c, err)
+		c.JSON(http.StatusBadRequest, gin.H{
+			"error": "id inválido",
+		})
 		return
 	}
 

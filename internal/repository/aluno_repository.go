@@ -8,21 +8,31 @@ import (
 	"gorm.io/gorm"
 )
 
-type AlunoRepository struct {
+type AlunoRepository interface {
+	FindAll() ([]models.Aluno, error)
+	FindById(id int) (*models.Aluno, error)
+	FindByCpf(cpf string) (*models.Aluno, error)
+	Create(a models.Aluno) (*models.Aluno, error)
+	Delete(a *models.Aluno) error
+	DeleteById(id int) (*models.Aluno, error)
+	Update(a *models.Aluno) error
+}
+
+type alunoRepository struct {
 	db *gorm.DB
 }
 
-func NewAlunoRepository(db *gorm.DB) *AlunoRepository {
-	return &AlunoRepository{db: db}
+func NewAlunoRepository(db *gorm.DB) AlunoRepository {
+	return &alunoRepository{db: db}
 }
 
-func (r *AlunoRepository) FindAll() ([]models.Aluno, error) {
+func (r *alunoRepository) FindAll() ([]models.Aluno, error) {
 	var a []models.Aluno
 	err := r.db.Find(&a).Error
 	return a, err
 }
 
-func (r *AlunoRepository) FindById(id int) (*models.Aluno, error) {
+func (r *alunoRepository) FindById(id int) (*models.Aluno, error) {
 	var a models.Aluno
 	err := r.db.First(&a, id).Error
 	if err != nil {
@@ -34,7 +44,7 @@ func (r *AlunoRepository) FindById(id int) (*models.Aluno, error) {
 	return &a, err
 }
 
-func (r *AlunoRepository) FindByCpf(cpf string) (*models.Aluno, error) {
+func (r *alunoRepository) FindByCpf(cpf string) (*models.Aluno, error) {
 	var a models.Aluno
 	err := r.db.Where(&models.Aluno{CPF: cpf}).First(&a).Error
 	if err != nil {
@@ -46,16 +56,16 @@ func (r *AlunoRepository) FindByCpf(cpf string) (*models.Aluno, error) {
 	return &a, err
 }
 
-func (r *AlunoRepository) Create(a models.Aluno) (*models.Aluno, error) {
+func (r *alunoRepository) Create(a models.Aluno) (*models.Aluno, error) {
 	err := r.db.Create(&a).Error
 	return &a, err
 }
 
-func (r *AlunoRepository) Delete(a *models.Aluno) error {
+func (r *alunoRepository) Delete(a *models.Aluno) error {
 	return r.db.Delete(a).Error
 }
 
-func (r *AlunoRepository) DeleteById(id int) (*models.Aluno, error) {
+func (r *alunoRepository) DeleteById(id int) (*models.Aluno, error) {
 	var a models.Aluno
 	err := r.db.First(&a, id).Error
 	if err != nil {
@@ -71,6 +81,6 @@ func (r *AlunoRepository) DeleteById(id int) (*models.Aluno, error) {
 	return &a, nil
 }
 
-func (r *AlunoRepository) Update(a *models.Aluno) error {
+func (r *alunoRepository) Update(a *models.Aluno) error {
 	return r.db.Save(a).Error
 }

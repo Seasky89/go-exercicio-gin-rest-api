@@ -9,27 +9,37 @@ import (
 	"github.com/Seasky89/go-gin-rest-api/internal/repository"
 )
 
-type AlunoService struct {
-	repo *repository.AlunoRepository
+type AlunoService interface {
+	FindAll() ([]models.Aluno, error)
+	FindById(id int) (*models.Aluno, error)
+	FindByCpf(cpf string) (*models.Aluno, error)
+	Create(a models.Aluno) (*models.Aluno, error)
+	Delete(id int) (*models.Aluno, error)
+	Update(id int, req dto.UpdateAlunoRequest) (*models.Aluno, error)
+	Patch(id int, req dto.PatchAlunoRequest) (*models.Aluno, error)
 }
 
-func NewAlunoService(repo *repository.AlunoRepository) *AlunoService {
-	return &AlunoService{repo: repo}
+type alunoService struct {
+	repo repository.AlunoRepository
 }
 
-func (s *AlunoService) FindAll() ([]models.Aluno, error) {
+func NewAlunoService(repo repository.AlunoRepository) AlunoService {
+	return &alunoService{repo: repo}
+}
+
+func (s *alunoService) FindAll() ([]models.Aluno, error) {
 	return s.repo.FindAll()
 }
 
-func (s *AlunoService) FindById(id int) (*models.Aluno, error) {
+func (s *alunoService) FindById(id int) (*models.Aluno, error) {
 	return s.repo.FindById(id)
 }
 
-func (s *AlunoService) FindByCpf(cpf string) (*models.Aluno, error) {
+func (s *alunoService) FindByCpf(cpf string) (*models.Aluno, error) {
 	return s.repo.FindByCpf(cpf)
 }
 
-func (s *AlunoService) Create(a models.Aluno) (*models.Aluno, error) {
+func (s *alunoService) Create(a models.Aluno) (*models.Aluno, error) {
 	a.Nome = strings.TrimSpace(a.Nome)
 	a.CPF = strings.TrimSpace(a.CPF)
 	a.RG = strings.TrimSpace(a.RG)
@@ -41,11 +51,11 @@ func (s *AlunoService) Create(a models.Aluno) (*models.Aluno, error) {
 	return s.repo.Create(a)
 }
 
-func (s *AlunoService) Delete(id int) (*models.Aluno, error) {
+func (s *alunoService) Delete(id int) (*models.Aluno, error) {
 	return s.repo.DeleteById(id)
 }
 
-func (s *AlunoService) Update(id int, req dto.UpdateAlunoRequest) (*models.Aluno, error) {
+func (s *alunoService) Update(id int, req dto.UpdateAlunoRequest) (*models.Aluno, error) {
 	aluno, err := s.repo.FindById(id)
 	if err != nil {
 		return nil, err
@@ -65,7 +75,7 @@ func (s *AlunoService) Update(id int, req dto.UpdateAlunoRequest) (*models.Aluno
 	return aluno, nil
 }
 
-func (s *AlunoService) Patch(id int, req dto.PatchAlunoRequest) (*models.Aluno, error) {
+func (s *alunoService) Patch(id int, req dto.PatchAlunoRequest) (*models.Aluno, error) {
 	aluno, err := s.repo.FindById(id)
 	if err != nil {
 		return nil, err
@@ -88,7 +98,11 @@ func (s *AlunoService) Patch(id int, req dto.PatchAlunoRequest) (*models.Aluno, 
 	}
 
 	if req.RG != nil {
-		aluno.RG = strings.TrimSpace(*req.RG)
+		rg := strings.TrimSpace(*req.RG)
+		if rg == "" {
+			return nil, domain.ErrRgObrigatorio
+		}
+		aluno.RG = rg
 	}
 
 	if err := domain.ValidarAluno(aluno); err != nil {
