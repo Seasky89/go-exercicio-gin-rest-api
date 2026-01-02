@@ -12,16 +12,14 @@ import (
 
 type fakeAlunoHandler struct{}
 
-func (f *fakeAlunoHandler) Welcome(c *gin.Context)      { c.Status(200) }
-func (f *fakeAlunoHandler) FindAll(c *gin.Context)      { c.Status(200) }
-func (f *fakeAlunoHandler) FindById(c *gin.Context)     { c.Status(200) }
-func (f *fakeAlunoHandler) Create(c *gin.Context)       { c.Status(200) }
-func (f *fakeAlunoHandler) Delete(c *gin.Context)       { c.Status(200) }
-func (f *fakeAlunoHandler) Update(c *gin.Context)       { c.Status(200) }
-func (f *fakeAlunoHandler) Patch(c *gin.Context)        { c.Status(200) }
-func (f *fakeAlunoHandler) FindByCpf(c *gin.Context)    { c.Status(200) }
-func (f *fakeAlunoHandler) IndexPage(c *gin.Context)    { c.Status(200) }
-func (f *fakeAlunoHandler) NotFoundPage(c *gin.Context) { c.Status(200) }
+func (f *fakeAlunoHandler) Welcome(c *gin.Context)   { c.Status(200) }
+func (f *fakeAlunoHandler) FindAll(c *gin.Context)   { c.Status(200) }
+func (f *fakeAlunoHandler) FindById(c *gin.Context)  { c.Status(200) }
+func (f *fakeAlunoHandler) Create(c *gin.Context)    { c.Status(200) }
+func (f *fakeAlunoHandler) Delete(c *gin.Context)    { c.Status(200) }
+func (f *fakeAlunoHandler) Update(c *gin.Context)    { c.Status(200) }
+func (f *fakeAlunoHandler) Patch(c *gin.Context)     { c.Status(200) }
+func (f *fakeAlunoHandler) FindByCpf(c *gin.Context) { c.Status(200) }
 
 func TestAlunosRoutesExist(t *testing.T) {
 	gin.SetMode(gin.TestMode)
