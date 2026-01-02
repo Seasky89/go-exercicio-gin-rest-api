@@ -3,6 +3,7 @@ package handlers
 import (
 	"encoding/json"
 	"errors"
+	"log"
 	"net/http"
 
 	"github.com/Seasky89/go-gin-rest-api/internal/domain"
@@ -25,7 +26,8 @@ func HandleHttpError(c *gin.Context, err error) {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 
 	default:
-		c.JSON(http.StatusInternalServerError, gin.H{"error": "erro interno;" + err.Error()})
+		log.Println(err)
+		c.JSON(http.StatusInternalServerError, gin.H{"error": "erro interno"})
 	}
 }
 

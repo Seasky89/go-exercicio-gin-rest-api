@@ -6,7 +6,7 @@ import (
 )
 
 func RegisterAPIRoutes(r *gin.Engine, h handlers.AlunoAPIHandler) {
-	r.GET("/:nome", h.Welcome)
+	r.GET("/welcome/:nome", h.Welcome)
 	alunos := r.Group("/alunos")
 	{
 		alunos.GET("", h.FindAll)

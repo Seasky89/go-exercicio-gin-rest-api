@@ -11,7 +11,7 @@ import (
 	"gorm.io/gorm"
 )
 
-func ConnectDB() (*gorm.DB, error) {
+func ConnectDB(runMigrate bool) (*gorm.DB, error) {
 	if err := godotenv.Load(); err != nil {
 		log.Println("Arquivo .env não encontrado")
 	}
@@ -30,8 +30,10 @@ func ConnectDB() (*gorm.DB, error) {
 		return nil, err
 	}
 
-	if err := db.AutoMigrate(&models.Aluno{}); err != nil {
-		return nil, err
+	if runMigrate {
+		if err := db.AutoMigrate(&models.Aluno{}); err != nil {
+			return nil, err
+		}
 	}
 
 	return db, nil
